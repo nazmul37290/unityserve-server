@@ -79,6 +79,13 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/volunteerRequests", async (req, res) => {
+      const query = { volunteerEmail: req.query?.email };
+      const cursor = requestCollection.find(query);
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
     app.post("/beAVolunteer", async (req, res) => {
       const data = req.body;
       console.log(data);
