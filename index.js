@@ -56,7 +56,20 @@ async function run() {
     app.post("/beAVolunteer", async (req, res) => {
       const data = req.body;
       console.log(data);
+
       const result = await requestCollection.insertOne(data);
+      res.send(result);
+    });
+    app.patch("/beAVolunteer/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log(id);
+      const filter = { _id: new ObjectId(id) };
+
+      const updateData = {
+        $inc: { volunteersNeeded: -1 },
+      };
+
+      const result = await postCollection.updateOne(filter, updateData);
       res.send(result);
     });
   } finally {
