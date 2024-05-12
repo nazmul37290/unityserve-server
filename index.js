@@ -35,8 +35,12 @@ async function run() {
 
     const postCollection = client.db("unityServe").collection("allNeedPosts");
     app.get("/posts", async (req, res) => {
-      const query = postCollection.find();
-      const result = await query.toArray();
+      const query = {};
+      const options = {
+        sort: { deadline: 1 },
+      };
+      const cursor = postCollection.find(query, options);
+      const result = await cursor.toArray();
       res.send(result);
     });
   } finally {
