@@ -5,7 +5,7 @@ require("dotenv").config();
 const port = process.env.PORT || 4000;
 
 app.use(cors());
-app.use(express());
+app.use(express.json());
 
 app.get("/", (req, res) => {
   res.send("Unity server is running");
@@ -32,7 +32,7 @@ async function run() {
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
-
+    const requestCollection = client.db("unityServe").collection("allRequests");
     const postCollection = client.db("unityServe").collection("allNeedPosts");
     app.get("/posts", async (req, res) => {
       const query = {};
@@ -50,6 +50,13 @@ async function run() {
       const query = { _id: new ObjectId(id) };
 
       const result = await postCollection.findOne(query);
+      res.send(result);
+    });
+
+    app.post("/beAVolunteer", async (req, res) => {
+      const data = req.body;
+      console.log(data);
+      const result = await requestCollection.insertOne(data);
       res.send(result);
     });
   } finally {
