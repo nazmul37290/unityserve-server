@@ -56,10 +56,36 @@ async function run() {
       res.send(result);
     });
 
-    // app.get("/posts", (req, res) => {
-    //   const query = req.query;
-    //   console.log(query);
-    // });
+    app.put("/posts/:id", async (req, res) => {
+      const id = req.params.id;
+      const post = req.body;
+      console.log(post);
+      const {
+        organizer: { name, email },
+        title,
+        thumbnail,
+        description,
+        category,
+        volunteersNeeded,
+        location,
+        deadline,
+      } = post;
+      const filter = { _id: new ObjectId(id) };
+      const updatedPost = {
+        $set: {
+          organizer: { name, email },
+          title,
+          thumbnail,
+          description,
+          category,
+          volunteersNeeded,
+          location,
+          deadline,
+        },
+      };
+      const result = await postCollection.updateOne(filter, updatedPost);
+      res.send(result);
+    });
 
     app.delete("/posts/:id", async (req, res) => {
       const id = req.params.id;
