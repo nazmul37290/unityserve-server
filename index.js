@@ -105,6 +105,15 @@ async function run() {
       const result = await postCollection.updateOne(filter, updateData);
       res.send(result);
     });
+
+    app.delete("/beAVolunteer/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log(id);
+      const query = { _id: new ObjectId(id) };
+
+      const result = await requestCollection.deleteOne(query);
+      res.send(result);
+    });
   } finally {
     // Ensures that the client will close when you finish/error
   }
