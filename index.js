@@ -35,7 +35,11 @@ async function run() {
     const requestCollection = client.db("unityServe").collection("allRequests");
     const postCollection = client.db("unityServe").collection("allNeedPosts");
     app.get("/posts", async (req, res) => {
-      const query = {};
+      let query = {};
+      console.log(req.query.email);
+      if (req.query?.email) {
+        query = { "organizer.email": req.query?.email };
+      }
       const options = {
         sort: { deadline: 1 },
       };
@@ -51,6 +55,11 @@ async function run() {
       const result = await postCollection.insertOne(data);
       res.send(result);
     });
+
+    // app.get("/posts", (req, res) => {
+    //   const query = req.query;
+    //   console.log(query);
+    // });
 
     app.delete("/posts/:id", async (req, res) => {
       const id = req.params.id;
