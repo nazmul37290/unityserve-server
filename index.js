@@ -9,7 +9,10 @@ const port = process.env.PORT || 4000;
 // middlewares
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: [
+      "https://unityserve-ee43d.web.app",
+      "https://unityserve-ee43d.firebaseapp.com",
+    ],
     credentials: true,
   })
 );
@@ -20,7 +23,7 @@ const verifyToken = (req, res, next) => {
   const token = req.cookies?.token;
   console.log("value of token in middle ware", token);
   if (!token) {
-    return res.status(401).send({ message: "Unauthorized" });
+    return res.status(401).send({ message: "token nai" });
   }
   jwt.verify(token, process.env.JWT_TOKEN_SECRET, (err, decoded) => {
     if (err) {
@@ -74,8 +77,10 @@ async function run() {
       );
       res.cookie("token", token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production" ? true : false,
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+        // secure: process.env.NODE_ENV === "production" ? true : false,
+        secure: true,
+        // sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+        sameSite: "none",
       });
       res.send({ success: true });
     });
