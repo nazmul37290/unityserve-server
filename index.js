@@ -35,10 +35,16 @@ async function run() {
     const requestCollection = client.db("unityServe").collection("allRequests");
     const postCollection = client.db("unityServe").collection("allNeedPosts");
     app.get("/posts", async (req, res) => {
+      const search = req.body;
+      console.log(search);
       let query = {};
-      console.log(req.query.email);
+      console.log(req.query.title);
       if (req.query?.email) {
         query = { "organizer.email": req.query?.email };
+      }
+      if (req.query?.title) {
+        const searchTitle = new RegExp(req.query?.title, "i");
+        query = { title: { $regex: searchTitle } };
       }
       const options = {
         sort: { deadline: 1 },
