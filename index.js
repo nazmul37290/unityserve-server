@@ -11,7 +11,9 @@ app.use(
   cors({
     origin: [
       "https://unityserve-ee43d.web.app",
-      "https://unityserve-ee43d.firebaseapp.com",
+
+      "http://localhost:5173",
+      "http://localhost:5174",
     ],
     credentials: true,
   })
@@ -73,16 +75,15 @@ async function run() {
           user,
         },
         process.env.JWT_TOKEN_SECRET,
-        { expiresIn: "1h" }
+        { expiresIn: "365d" }
       );
-      res.cookie("token", token, {
-        httpOnly: true,
-        // secure: process.env.NODE_ENV === "production" ? true : false,
-        secure: true,
-        // sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-        sameSite: "none",
-      });
-      res.send({ success: true });
+      res
+        .cookie("token", token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+        })
+        .send({ success: true });
     });
 
     app.get("/posts", async (req, res) => {
@@ -215,6 +216,17 @@ async function run() {
 
       const result = await requestCollection.deleteOne(query);
       res.send(result);
+    });
+
+    app.post("/logout", async (req, res) => {
+      res
+        .clearCookie("token", {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+          maxAge: 0,
+        })
+        .send({ success: true });
     });
   } finally {
     // Ensures that the client will close when you finish/error
